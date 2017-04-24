@@ -9,9 +9,6 @@ void TileFloor::Initialise()//Mesh& tileMesh)
 	destroyStatus = stable;
 
 	switch (protection) {
-	case 1:
-		_col = glm::vec4(1, 1, 0, 1);
-		break;
 	case -1:
 		// Invincible tile
 		break;
@@ -23,15 +20,7 @@ void TileFloor::Initialise()//Mesh& tileMesh)
 		break;
 	}
 
-	switch (getTileType()) {
-	case Tile::eStart:
-		_col = glm::vec4(0, 1, 0, 1);
-		break;
-	case Tile::eEnd:
-		_col = glm::vec4(1, 0, 1, 1);
-		break;
-	}
-
+	recolour();
 }
 
 void TileFloor::Update(float dTime, float newPadding) {
@@ -113,6 +102,7 @@ void TileFloor::moveOn()
 void TileFloor::moveOff()
 {
 	stepOffTile();
+	recolour();
 }
 
 int TileFloor::getInfo() const
@@ -183,4 +173,31 @@ void TileFloor::removeTile()
 	setHidden(true);
 	resetDisplacement();
 	destroyStatus = stable;
+}
+
+void TileFloor::recolour() {
+	switch (protection) {
+	case 0:
+		_col = glm::vec4(0, 0, 0, 1);
+		break;
+	case 1:
+		_col = glm::vec4(1, 1, 0, 1);
+		break;
+	case -1:
+		// Invincible tile
+		_col = glm::vec4(1, 1, 1, 1);
+		break;
+	case -2:
+		// Destroyed tile
+		break;
+	}
+
+	switch (getTileType()) {
+	case Tile::eStart:
+		_col = glm::vec4(0, 1, 0, 1);
+		break;
+	case Tile::eEnd:
+		_col = glm::vec4(1, 0, 1, 1);
+		break;
+	}
 }

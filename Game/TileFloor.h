@@ -43,6 +43,8 @@ private:
 	void killTile();
 	void removeTile();
 
+	void recolour();
+
 
 	bool playerIsOn;	// Is the player on the tile?
 	bool floorIsDead;	// Is the floor deadly?

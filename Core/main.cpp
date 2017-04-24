@@ -58,7 +58,7 @@ int main(int argc, char* args[]) {
 
 			if (!quit) {
 				float ticks = SDL_GetTicks();
-				quit = game.update((ticks - dTime) / 1500);
+				quit = game.update((ticks - dTime) / 1500, e);
 				game.render(ticks - dTime);
 
 				dTime = ticks;

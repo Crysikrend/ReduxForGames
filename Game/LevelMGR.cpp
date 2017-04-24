@@ -52,15 +52,18 @@ LevelMGR::LevelMGR(glm::vec3 anch, ShaderManager* shaders) {
 	modelToUse = new Model(mesh, shaders, "simple", texture);
 
 	level = new Level(anch, modelToUse);
+
+	currentLevel = 0;
+	changeLevel(currentLevel);
 }
 
 void LevelMGR::Initialise(const glm::vec4& persp, const glm::mat4& viewPos)
 {
 	//BuildCube(*mMeshMgr);
-
 	modelToUse->initialise(persp, viewPos);
 
-	changeLevel(3);
+	/*if (!level->getLevelStarted() && !level->getLevelEnded())
+		changeLevel(currentLevel);*/
 }
 
 void LevelMGR::Release()
@@ -272,7 +275,7 @@ LevelMGR::levelTemplate LevelMGR::getLayout(int layoutNo) {
 
 			nextLevel.tileWidth = 1;		// Width of tles
 			nextLevel.tileDim = 8;			// Amount of tiles (n*n)
-			nextLevel.tilePadding = 1.25;	// Padding between blocks
+			nextLevel.tilePadding = 1.45;	// Padding between blocks
 
 			nextLevel.tileList = {
 				{ Tile::eBasic, Tile::eBasic, Tile::eBasic, Tile::eBasic, Tile::eBasic, Tile::eBasic, Tile::eBasic, Tile::eBasic },

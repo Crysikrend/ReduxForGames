@@ -1,33 +1,41 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Mesh.h"
-#include "Model.h"
-#include "Input.h"
-#include "LevelMGR.h"
-#include "FX.h"
+#if defined(__linux__)
+/* Linux */
+#include <SDL2/SDL.h>
+#else
+/* Windows/else */
+#include <SDL.h>
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+#endif
 
-using namespace std;
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
+#include "LevelMGR.h"
 
 class Player{
 public:
-	void Initialise(FX::MyFX&, Mesh&, LevelMGR*, MouseAndKeys*);
+	Player(Model*, LevelMGR*);
+
+	void Initialise();
 	void Release();
-	void Update(float);
+	void Update(float, const SDL_Event&);
 	void Render(float);
 	void makePlayerOne();
 	void makePlayerTwo();
 	bool getMoveRequest();
-	Vector3 getPlayerPostion();
-	Vector2 getMoveDirection();
+	glm::vec3 getPlayerPostion();
+	glm::vec2 getMoveDirection();
 
 	//game models that reference meshes
-	Model player;
+	Model* player;
 
-	//handy rendering state
-	FX::MyFX* mFX;
 private:
 	int cellX;
 	int cellY;
@@ -35,12 +43,10 @@ private:
 	bool buttonHold;
 	bool moveRequest;
 	bool playerOne;
-	void move();
-	Vector3 adjustVector;
-	Vector2 moveDirection;
+	void move(const SDL_Event&);
+	glm::vec3 adjustVector;
+	glm::vec2 moveDirection;
 	LevelMGR* levelManager;
-
-	MouseAndKeys* mMKInput;
 };
 
 #endif

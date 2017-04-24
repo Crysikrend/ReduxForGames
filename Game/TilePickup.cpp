@@ -27,17 +27,16 @@ void TilePickup::Render(float dTime, float zAdjust, bool setInsteadOfAdd)
 
 		_pos += getDisplacement();
 
-		_sca = glm::vec3(getCellWidth(), getCellWidth(), getCellWidth());
+		_rot = glm::vec3(glm::pi<float>() / 4, glm::pi<float>() / 4, spinAngle);
+		_sca = glm::vec3(0.5, 0.5, 0.5);
+
+		tile->_pos = _pos;
+		tile->_rot = _rot;
+		tile->_sca = _sca;
+		tile->_col = _col;
+		tile->render();
 	}
 
-	_rot = glm::vec3(glm::pi<float>() / 4, glm::pi<float>() / 4, spinAngle);
-	_sca = glm::vec3(0.5, 0.5, 0.5);
-
-	tile->_pos = _pos;
-	tile->_rot = _rot;
-	tile->_sca = _sca;
-	tile->_col = _col;
-	tile->render();
 }
 
 bool TilePickup::bump()

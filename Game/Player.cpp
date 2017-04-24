@@ -1,56 +1,59 @@
 #include "Player.h"
 
-void Player::Initialise(FX::MyFX& fxRef, Mesh& playerMesh, LevelMGR* levelPointer, MouseAndKeys* mMKPointer){
-	mFX = &fxRef;
-	player.Initialise(playerMesh);
-	player.GetPosition() = levelPointer->getStartingPosition();
-	adjustVector = player.GetPosition();
-	levelManager = levelPointer;
-	mMKInput = mMKPointer;
+Player::Player(Model* model, LevelMGR* levelPointer) 
+	:player(model), levelManager(levelPointer){
+}
+
+void Player::Initialise(){
+
+	adjustVector = levelManager->getStartingPosition();
 	buttonHold = false;
 	moveWait = 0;
 	playerOne = true;
+
 }
 void Player::Release(){
 
 }
-void Player::Update(float dTime){
+void Player::Update(float dTime, const SDL_Event& e){
 	bool success = false;
 
-	move();
+	move(e);
 
 	if ((!buttonHold || (buttonHold && moveWait <= 0)) && (moveDirection.x != 0 || moveDirection.y != 0)){
-		adjustVector = levelManager->move(player.GetPosition(), moveDirection, success);
+		adjustVector = levelManager->move(adjustVector, moveDirection, success);
 		moveWait = 250;
 	}
 	else // If the player is not moving, retrieve the current tile's coords
 		adjustVector = levelManager->getCurrentLocationOfTile(adjustVector);
 
-	if (moveDirection != Vector2(0, 0))
+	if (moveDirection != glm::vec2(0, 0))
 		buttonHold = true;
 	else
 		buttonHold = false;
 
 	moveWait -= dTime;
 
-	moveDirection = Vector2(0, 0);
+	moveDirection = glm::vec2(0, 0);
 }
 void Player::Render(float dTime){
-	mFX->Render(player, gd3dImmediateContext);
-	player.GetPosition() = adjustVector;
+	adjustVector.z += 2;
+	player->_pos = adjustVector;
+	player->_sca = glm::vec3(0.5, 0.5, 0.5);
+	player->_col = glm::vec4(0, 1, 1, 1);
 
 	// This is so that the player sits on top of his tile. You need to add the size of the player on the end so that he's not inside it
-	player.GetPosition().z += 2;
+	player->render();
 }
 bool Player::getMoveRequest(){
 	bool state = moveRequest;
 	moveRequest = false;
 	return state;
 }
-Vector3 Player::getPlayerPostion(){
-	return player.GetPosition();
+glm::vec3 Player::getPlayerPostion(){
+	return adjustVector;
 }
-Vector2 Player::getMoveDirection(){
+glm::vec2 Player::getMoveDirection(){
 	return moveDirection;
 }
 void Player::makePlayerOne(){
@@ -59,32 +62,26 @@ void Player::makePlayerOne(){
 void Player::makePlayerTwo(){
 	playerOne = false;
 }
-void Player::move(){
-	if (playerOne){
-		if (mMKInput->IsPressed(VK_W)){
-			moveDirection = Vector2(0, 1);
-		}
-		else if (mMKInput->IsPressed(VK_A)){
-			moveDirection = Vector2(-1, 0);
-		}
-		else if (mMKInput->IsPressed(VK_S)){
-			moveDirection = Vector2(0, -1);
-		}
-		else if (mMKInput->IsPressed(VK_D)){
-			moveDirection = Vector2(1, 0);
-		}
-	}else{
-		if (mMKInput->IsPressed(VK_UP)){
-			moveDirection = Vector2(0, 1);
-		}
-		else if (mMKInput->IsPressed(VK_LEFT)){
-			moveDirection = Vector2(-1, 0);
-		}
-		else if (mMKInput->IsPressed(VK_DOWN)){
-			moveDirection = Vector2(0, -1);
-		}
-		else if (mMKInput->IsPressed(VK_RIGHT)){
-			moveDirection = Vector2(1, 0);
+void Player::move(const SDL_Event& e){
+	if (e.type == SDL_KEYDOWN && playerOne){
+
+		switch (e.key.keysym.sym) {
+		case SDLK_w:
+		case SDLK_UP:
+			moveDirection = glm::vec2(0, 1);
+			break;
+		case SDLK_a:
+		case SDLK_LEFT:
+			moveDirection = glm::vec2(-1, 0);
+			break;
+		case SDLK_s:
+		case SDLK_DOWN:
+			moveDirection = glm::vec2(0, -1);
+			break;
+		case SDLK_d:
+		case SDLK_RIGHT:
+			moveDirection = glm::vec2(1, 0);
+			break;
 		}
 	}
 }

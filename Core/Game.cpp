@@ -9,10 +9,60 @@ void Game::initialise()
 
 	_shaders->newShader("Shaders/", "simple");
 
-	levelMGR = new LevelMGR(glm::vec3(0,0,0), _shaders);
+	levelMGR = new LevelMGR(glm::vec3(0, 0, 0), _shaders);
+
+	//CUBE
+	std::vector<GLfloat> vertices = {
+		-1.f, -1.f, -1.f,  0.0f, 0.0f,
+		1.f, -1.f, -1.f,  1.0f, 0.0f,
+		1.f,  1.f, -1.f,  1.0f, 1.0f,
+		1.f,  1.f, -1.f,  1.0f, 1.0f,
+		-1.f,  1.f, -1.f,  0.0f, 1.0f,
+		-1.f, -1.f, -1.f,  0.0f, 0.0f,
+
+		-1.f, -1.f,  1.f,  0.0f, 0.0f,
+		1.f, -1.f,  1.f,  1.0f, 0.0f,
+		1.f,  1.f,  1.f,  1.0f, 1.0f,
+		1.f,  1.f,  1.f,  1.0f, 1.0f,
+		-1.f,  1.f,  1.f,  0.0f, 1.0f,
+		-1.f, -1.f,  1.f,  0.0f, 0.0f,
+
+		-1.f,  1.f,  1.f,  1.0f, 0.0f,
+		-1.f,  1.f, -1.f,  1.0f, 1.0f,
+		-1.f, -1.f, -1.f,  0.0f, 1.0f,
+		-1.f, -1.f, -1.f,  0.0f, 1.0f,
+		-1.f, -1.f,  1.f,  0.0f, 0.0f,
+		-1.f,  1.f,  1.f,  1.0f, 0.0f,
+
+		1.f,  1.f,  1.f,  1.0f, 0.0f,
+		1.f,  1.f, -1.f,  1.0f, 1.0f,
+		1.f, -1.f, -1.f,  0.0f, 1.0f,
+		1.f, -1.f, -1.f,  0.0f, 1.0f,
+		1.f, -1.f,  1.f,  0.0f, 0.0f,
+		1.f,  1.f,  1.f,  1.0f, 0.0f,
+
+		-1.f, -1.f, -1.f,  0.0f, 1.0f,
+		1.f, -1.f, -1.f,  1.0f, 1.0f,
+		1.f, -1.f,  1.f,  1.0f, 0.0f,
+		1.f, -1.f,  1.f,  1.0f, 0.0f,
+		-1.f, -1.f,  1.f,  0.0f, 0.0f,
+		-1.f, -1.f, -1.f,  0.0f, 1.0f,
+
+		-1.f,  1.f, -1.f,  0.0f, 1.0f,
+		1.f,  1.f, -1.f,  1.0f, 1.0f,
+		1.f,  1.f,  1.f,  1.0f, 0.0f,
+		1.f,  1.f,  1.f,  1.0f, 0.0f,
+		-1.f,  1.f,  1.f,  0.0f, 0.0f,
+		-1.f,  1.f, -1.f,  0.0f, 1.0f
+	};
+
+	pMesh = new Mesh("Pyramid",vertices, 5, 3, false);
+	pModel = new Model(pMesh, _shaders, "simple");
+	player = new Player(pModel, levelMGR);
+	player->Initialise();
 
 
-		// Will always be true, but it sets bools for later
+	// Will always be true, but it sets bools for later
 	if (_window->getWindowResized())
 		initialiseNewRes();
 
@@ -33,6 +83,7 @@ void Game::initialiseNewRes() {
 
 	// Initialise objects
 	levelMGR->Initialise(persp, view);
+	pModel->initialise(persp, view);
 
 }
 
@@ -41,18 +92,19 @@ void Game::release() {
 	quit();
 
 	// Release data
-	delete testMesh;
-	delete testTex;
-	delete _shaders;
+	delete player;
+	delete pModel;
 	delete levelMGR;
+	delete _shaders;
 
 }
-bool Game::update(float dTime) {
+bool Game::update(float dTime, const SDL_Event& e) {
 
 	if (_window->getWindowResized())
 		initialiseNewRes();
 
 	levelMGR->Update(dTime);
+	player->Update(dTime, e);
 
 	// Return whether the game should continue
     return _quitGame;
@@ -64,6 +116,7 @@ void Game::render(float dTime) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	levelMGR->Render(dTime);
+	player->Render(dTime);
 
 	/*SDL_GL_SwapWindow(_window->getWindowOK());*/
 	_window->swapWindow();

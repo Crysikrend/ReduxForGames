@@ -29,6 +29,7 @@
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="Game\Level.cpp" />
     <ClCompile Include="Game\LevelMGR.cpp" />
+    <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\Tile.cpp" />
     <ClCompile Include="Game\TileEnd.cpp" />
     <ClCompile Include="Game\TileFloor.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Game\Level.h" />
     <ClInclude Include="Game\LevelMGR.h" />
+    <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\Tile.h" />
     <ClInclude Include="Game\TileEnd.h" />
     <ClInclude Include="Game\TileFloor.h" />

@@ -12,8 +12,8 @@ void Level::Initialise(const vector<vector<Tile::TileType>>& layout, const vecto
 	levelCaption = caption;
 
 	// Set values for the 'explosive' transitions
-	maxAdditionalPadding = 40;
-	levelTransitionSpeed = 26;
+	maxAdditionalPadding = 50;
+	levelTransitionSpeed = 50;
 	additionalPadding = maxAdditionalPadding;
 
 	// Initialise bools to control the flow of the game
@@ -194,7 +194,7 @@ glm::vec3 Level::move(const glm::vec3& pos, const glm::vec2& dir, bool& success)
 		const glm::vec2 pPos = getCellFromCoords(pos);
 		const glm::vec2 newPos = pPos + dir;
 
-		success = (newPos.x >= 0 && newPos.x < cellDim && newPos.y >= 0 && newPos.y < cellDim);
+		success = (newPos.x >= 0 && newPos.x < cellDim && newPos.y >= 0 && newPos.y < cellDim );
 		if (success)
 		{
 			// 'Bump' lets the new tile know that the player wishes to move there, while returning if it's possible

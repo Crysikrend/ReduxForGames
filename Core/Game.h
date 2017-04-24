@@ -26,6 +26,7 @@
 #include "ShaderManager.h"
 #include "Model.h"
 #include "../Game/LevelMGR.h"
+#include "../Game/Player.h"
 
 class Game {
 public:
@@ -37,7 +38,7 @@ public:
 	void initialiseNewRes();
 	void release();
 
-	bool update(float dTime);
+	bool update(float dTime, const SDL_Event& e);
 	void render(float dTime);
 
 
@@ -55,6 +56,11 @@ private:
 	ShaderManager* _shaders;
 
 	LevelMGR* levelMGR;
+
+	Mesh* pMesh;
+	Model* pModel;
+	Player*player;
+
 
 	void quit();
 };
